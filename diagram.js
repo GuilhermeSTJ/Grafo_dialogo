@@ -3,7 +3,7 @@ var $ = go.GraphObject.make;
 diagram = $(go.Diagram,"diagram",{
   "grid.visible" : true, // Faz o grip ficar visivel
   //"grid.gridCellSize": new go.Size(10, 10),
-  "draggingTool.dragsLink": true, // 
+  //"draggingTool.dragsLink": true, // 
   "draggingTool.isGridSnapEnabled": true,
   "resizingTool.isGridSnapEnabled" : true,
   "linkingTool.isUnconnectedLinkValid": true,
@@ -20,8 +20,8 @@ diagram = $(go.Diagram,"diagram",{
 diagram.grid =
   $(go.Panel, go.Panel.Grid,  // or "Grid"
     { gridCellSize: new go.Size(50, 50) },
-    $(go.Shape, "LineH", { stroke: "blue" }),
-    $(go.Shape, "LineV", { stroke: "green" })
+    $(go.Shape, "LineH", { stroke: "lightblue" }),
+    $(go.Shape, "LineV", { stroke: "lightblue" })
   );
 
 diagram.addDiagramListener("Modified", e => {
@@ -35,31 +35,46 @@ diagram.addDiagramListener("Modified", e => {
   }
 });
 
+function nodeStyle() {
+  return [
+    new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+    {
+      locationSpot: go.Spot.Center
+    }
+  ];
+}
+
 function save() {
   document.getElementById("mySavedModel").value = diagram.model.toJson();
+  texto = diagram.model.toJson();
   diagram.isModified = false;
+  console.log(texto);
+
 }
+
 function load() {
   diagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
 }
 
 //Cria o template do nó responsavel pelo Script
 diagram.nodeTemplateMap.add("Script",
-$(go.Node, "Auto",
-  $(go.Panel, "Position",
+$(go.Node, "Auto",nodeStyle(),{
+  fromSpot: go.Spot.Right, toSpot:go.Spot.Left
+},
+  $(go.Panel, "Position",  
+  
+  $(go.Shape,"Circle",{ // Porta que sai links
+    desiredSize: new go.Size(30,30), position: new go.Point(185,85), fill: "GreenYellow",
+    portId: "Dialogo_out", fromLinkable: true, cursor: "pointer",
+    stroke: null}),
+    
+    $(go.Shape,"Circle",{ // Porta que links se conectam
+      desiredSize: new go.Size(30,30), position: new go.Point(-15,85), fill: "DarkRed",
+      portId: "Dialogo_in", toLinkable: true, stroke: null}),
 
     $(go.Shape,"RoundedRectangle",{ // Parte do nome
       position: new go.Point(0,0),fill: "LightSlateGrey ",desiredSize: new go.Size(200, 40),stroke: null}),
-
-    $(go.Shape,"Circle",{ // Porta que sai links
-      desiredSize: new go.Size(30,30), position: new go.Point(185,85), fill: "GreenYellow",
-      portId: "Dialogo_out", fromSpot: go.Spot.Right, fromLinkable: true, cursor: "pointer",
-      stroke: null}),
-
-    $(go.Shape,"Circle",{ // Porta que links se conectam
-      desiredSize: new go.Size(30,30), position: new go.Point(-15,85), fill: "DarkRed",
-      portId: "Dialogo_in",toSpot: go.Spot.Left, toLinkable: true, stroke: null}),
-
+      
     //Parte que contorna o texto e serve com porta de entrada 
     $(go.Shape,"RoundedRectangle",{ 
       position: new go.Point(0,30),fill: "LightSlateGrey ",desiredSize: new go.Size(200, 170),
@@ -77,27 +92,32 @@ $(go.Node, "Auto",
       editable:true, position: new go.Point(10,10), font: "bold 10pt FontAwesome", stroke: "MintCream" }),
 
     //Variavel correspondente ao nome.
-    $(go.TextBlock, "-----------", new go.Binding("text", "key"),
-      { position: new go.Point(102, 10),height: 20, width: 78, editable: true , stroke: "MintCream"  }),
+    $(go.TextBlock, "-----------",
+      { position: new go.Point(102, 10),height: 20, width: 78, editable: true , stroke: "MintCream"  },
+      new go.Binding("text", "key").makeTwoWay()
+      ),
 
     //Bloco de texto onde recebera os comandos
     $(go.TextBlock, "",
       { position: new go.Point(20,50), editable: true, desiredSize: new go.Size(160, 130) },
-      new go.Binding("text"))
-
+      new go.Binding("text").makeTwoWay()
+    )
 )));
 
 diagram.nodeTemplateMap.add("Dialogo",
-  $(go.Node, "Auto",
+  $(go.Node, "Auto",nodeStyle(),{
+    fromSpot: go.Spot.Right, toSpot: go.Spot.Left,
+  },
     $(go.Panel, "Position",
+
       $(go.Shape,"Circle",{ // Porta que sai links
         desiredSize: new go.Size(30,30), position: new go.Point(185,85), fill: "GreenYellow",
-        portId: "Script_out", fromSpot: go.Spot.Right, fromLinkable: true, cursor: "pointer",
+        portId: "Script_out", fromLinkable: true, cursor: "pointer",
         stroke: null}),
 
       $(go.Shape,"Circle",{ // Porta que links se conectam
         desiredSize: new go.Size(30,30), position: new go.Point(-15,85), fill: "DarkRed",
-        portId: "Script_in", toSpot: go.Spot.Left, toLinkable: true,stroke: null}),
+        portId: "Script_in", toLinkable: true,stroke: null}),
       
       $(go.Shape,"RoundedRectangle",{ // parte que vem o nome
       position: new go.Point(0,0),fill: "darkslategray",width:200, height: 200,stroke: null}),
@@ -116,25 +136,27 @@ diagram.nodeTemplateMap.add("Dialogo",
         editable:true, position: new go.Point(10,10), stroke: "white", font: "10pt FontAwesome" }),
 
       $(go.TextBlock, "-----------",new go.Binding("text", "key"),
-        { position: new go.Point(103, 10), editable: true,height: 20, width: 78 }),
+        { position: new go.Point(103, 10), editable: true,height: 20, width: 78 },
+        new go.Binding("text", "key").makeTwoWay()
+        ),
       
       //Texto relacionado ao input
       $(go.TextBlock, "",
       { position: new go.Point(7,33), editable: true, desiredSize: new go.Size(90, 160) },
-      new go.Binding("text")),
+      new go.Binding("text","input").makeTwoWay(),
+      ),
 
       //Texto relacionado ao output
       $(go.TextBlock, "",
       { position: new go.Point(104,33), editable: true, desiredSize: new go.Size(90, 160) },
-      new go.Binding("text"))
-
-
+      new go.Binding("text","output").makeTwoWay()
+      )
 )));
 
 
 diagram.linkTemplate =
   $(go.Link,
-    { corner:10, routing: go.Link.AvoidsNodes, curve:go.Link.JumpOver }, 
+    { corner:10, routing: go.Link.AvoidsNodes, curve:go.Link.JumpOver, fromEndSegmentLength: 30,toEndSegmentLength: 30 }, 
     $(go.Shape, { strokeWidth: 4 }),
     $(go.Shape, { toArrow: "Standard", scale:2 })
   );
