@@ -2,22 +2,34 @@
 
 <html>
     <head>
-        <title>Teste1</title>
-        <script src="release/go.js"></script>
+        <title>Grafo de Dialogos</title>
+        <script src="libs/go.js"></script>
+        <script src="libs/FileSaver.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <link rel="stylesheet" href="style.css">
+
     </head>
-    
+    <header >
+        <button class="button" id= "savebutton" onclick="save()">Save</button>    
+        <button class = "button" id= "loadbutton" onclick="load()" >Load</button>
+        <div class="dropdown">     
+            <button class= "button" id="legendabutton">Legenda</button> 
+            <div class="conteudolegenda">
+                <a> O divisor atual e o ";" ##isso sera modificado</a>
+                <a >"@speak" Gera uma fala do robios </a>
+                <a >"@wait" Pausa em milisegundos</a>
+                <a>"@voice" Abre o microfone </a>
+                <a >"@script" Chama um script</a>
+            </div>
+        </div>
+        <button class="button" id = "parbutton" onclick="par()">Parser</button>
+        <div id ="Palette" ></div>  
+
+    </header>
     <body onload >
-        <button id=" SaveButton" onclick="save()" >Save</button>    
-        <button onclick="load()">Load</button>
         
-        <div id ="diagram" style="width: 1900px; height: 1030px; border: 3px solid black; position: absolute"></div>
-        
-        
-        <div id ="Palette" style="width: 300px; height: 100px; border: 3px solid black;background-color: white " ></div>
-        
-        <textarea id="mySavedModel" style="width:100px;height:300p;position:absolute;top:0; left: 700px"></textarea>
-        
-        
+        <div id ="diagram"></div>
+                
         <script src="diagram.js"></script>
     </body>
 </html>

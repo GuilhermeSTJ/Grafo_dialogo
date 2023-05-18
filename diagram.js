@@ -1,5 +1,6 @@
 var $ = go.GraphObject.make;
 
+
 diagram = $(go.Diagram,"diagram",{
   "grid.visible" : true, // Faz o grip ficar visivel
   //"grid.gridCellSize": new go.Size(10, 10),
@@ -35,6 +36,7 @@ diagram.addDiagramListener("Modified", e => {
   }
 });
 
+
 function nodeStyle() {
   return [
     new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
@@ -44,16 +46,21 @@ function nodeStyle() {
   ];
 }
 
+function load() {
+  Modelo = prompt('Coloque os dados aqui:');
+  diagram.model = go.Model.fromJson(Modelo);
+}
+
+
 function save() {
-  document.getElementById("mySavedModel").value = diagram.model.toJson();
   texto = diagram.model.toJson();
   diagram.isModified = false;
   console.log(texto);
 
-}
-
-function load() {
-  diagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
+var blob = new Blob([texto], {
+    type: "text/plain;charset=utf-8",
+});
+saveAs(blob, "saida.json");
 }
 
 //Cria o template do nó responsavel pelo Script
@@ -61,8 +68,9 @@ diagram.nodeTemplateMap.add("Script",
 $(go.Node, "Auto",nodeStyle(),{
   fromSpot: go.Spot.Right, toSpot:go.Spot.Left
 },
-  $(go.Panel, "Position",  
-  
+  $(go.Panel, "Position", {
+    name:"MAIN"
+  },
   $(go.Shape,"Circle",{ // Porta que sai links
     desiredSize: new go.Size(30,30), position: new go.Point(185,85), fill: "GreenYellow",
     portId: "Dialogo_out", fromLinkable: true, cursor: "pointer",
@@ -73,7 +81,8 @@ $(go.Node, "Auto",nodeStyle(),{
       portId: "Dialogo_in", toLinkable: true, stroke: null}),
 
     $(go.Shape,"RoundedRectangle",{ // Parte do nome
-      position: new go.Point(0,0),fill: "LightSlateGrey ",desiredSize: new go.Size(200, 40),stroke: null}),
+      position: new go.Point(0,0),fill: "LightSlateGrey ",
+      desiredSize: new go.Size(200, 40),stroke: null}),
       
     //Parte que contorna o texto e serve com porta de entrada 
     $(go.Shape,"RoundedRectangle",{ 
@@ -154,6 +163,43 @@ diagram.nodeTemplateMap.add("Dialogo",
 )));
 
 
+diagram.nodeTemplateMap.add("Inicia",
+$(go.Node, "Auto",nodeStyle(),{
+  fromSpot: go.Spot.Right, toSpot:go.Spot.Left, 
+  resizable:true
+},
+  $(go.Panel, "Position", {
+    name:"MAIN"
+  },
+    $(go.Shape,"Rectangle",{ 
+      desiredSize: new go.Size(60,20), position: new go.Point(90,50), fill: "GreenYellow",
+      portId: "Dialogo_out", fromLinkable: true, cursor: "pointer",
+      stroke: null}), 
+    $(go.Shape,"Circle",{ 
+      desiredSize: new go.Size(120,120), position: new go.Point(0,0), fill: "Blue", stroke: null}), 
+    $(go.TextBlock, "INICIO", {
+      editable:true, position: new go.Point(25,45), stroke: "white", font: "20pt FontAwesome" }),
+  )
+));
+
+diagram.nodeTemplateMap.add("Fim",
+$(go.Node, "Auto",nodeStyle(),{
+  fromSpot: go.Spot.Right, toSpot:go.Spot.Left, 
+},
+  $(go.Panel, "Position", {
+    name:"MAIN"
+  },
+    $(go.Shape,"Rectangle",{ 
+      desiredSize: new go.Size(60,20), position: new go.Point(-30,50), fill: "DarkRed",
+      portId: "Script_in", toLinkable: true,stroke: null,
+      stroke: null}), 
+    $(go.Shape,"Circle",{ 
+      desiredSize: new go.Size(120,120), position: new go.Point(0,0), fill: "Red", stroke: null}),
+    $(go.TextBlock, "  FIM", {
+      editable:true, position: new go.Point(40,45), stroke: "white", font: "20pt FontAwesome" }),
+),
+));
+
 diagram.linkTemplate =
   $(go.Link,
     { corner:10, routing: go.Link.AvoidsNodes, curve:go.Link.JumpOver, fromEndSegmentLength: 30,toEndSegmentLength: 30 }, 
@@ -179,15 +225,21 @@ myPalette =
 $(go.Palette, "Palette",  //Define em qual div vai ser colocado a palette
   {
     initialScale: 0.4,
-    nodeTemplateMap: diagram.nodeTemplateMap,  
+    nodeTemplateMap: diagram.nodeTemplateMap,
     model: new go.GraphLinksModel([  
+      {
+        category: "Inicia"
+      },
+      {
+        category: "Fim"
+      },
       { 
         category: "Script",
       },
       { 
-        category: "Dialogo" },
+        category: "Dialogo",
+       },
     ]),
   });
   
   myPalette.grid.visible = false;
-  window.addEventListener('DOMContentLoaded', init);
