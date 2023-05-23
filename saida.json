@@ -1,0 +1,27 @@
+{ "class": "GraphLinksModel",
+  "nodeDataArray": [
+{"category":"Inicia","key":-1,"loc":"-800 -100"},
+{"category":"Dialogo","key":"Negado","loc":"-50 -200","input":"N\u00e3o","output":"Sempre tem uma primeira vez! Espero que voc\u00ea goste de falar comigo!"},
+{"category":"Dialogo","key":"Afirmado","loc":"-50 50","input":"Sim","output":"Que legal! Espero que voc\u00ea goste de falar comigo!"},
+{"category":"Dialogo","key":"Nome","loc":"-400 -350","input":"Meu nome \u00e9 #{nome};\nEu sou #{nome}\n#{nome};"},
+{"category":"Script","key":"Inicia","loc":"-700 -350","text":"wait:500;\nspeak:Oi, eu sou John\nexp:normal;\nspeak:Sou um rob\u00f4 social, e essa \u00e9 minha primeira vez na semana de Sistemas de informa\u00e7\u00e3o;\nspeak:Qual seu nome?\n"},
+{"category":"Script","key":"ComNome","loc":"-500 -100","text":"speak:Muito prazer #{nome};\nspeak:Essa \u00e9 minha primeira intera\u00e7\u00e3o com humanos, eu ainda estou aprendendo a interagir;\nspeak:Voc\u00ea j\u00e1 conversou com algum rob\u00f4 antes?;"},
+{"category":"Script","key":"Opcoes","loc":"300 -100","text":"speak: Hoje estou aqui para te ajudar!;\nspeak: Posso te ensinar a ganhar brindes;\nwait:500;\nspeak: Te contar curiosidades...;"},
+{"category":"Fim","key":-2,"loc":"1000 -100"},
+{"category":"Script","key":"Fim","loc":"650 -100","text":"@speak: tchau tchau;"}
+],
+  "linkDataArray": [
+{"from":-1,"to":"Inicia"},
+{"from":"Inicia","to":"Nome"},
+{"from":"Nome","to":"ComNome"},
+{"from":"ComNome","to":"Afirmado"},
+{"from":"ComNome","to":"Negado"},
+{"from":"Negado","to":"Opcoes"},
+{"from":"Afirmado","to":"Opcoes"},
+{"from":"Inicia"},
+{"from":"ComNome"},
+{"from":"Nome"},
+{"from":"Negado"},
+{"from":"Opcoes","to":"Fim"},
+{"from":"Fim","to":-2}
+]}

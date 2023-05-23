@@ -48,8 +48,26 @@ def jsonScript(nome,cont):
     with open("C:/Users/Teo/Downloads/Script/"+ nome + '.json', 'w', encoding='utf-8') as f:
         json.dump( data_Script, f, ensure_ascii=False, indent=4)
 
-def jsonDialogo():
-    nome = ''
+def jsonDialogo(ent,sai,lin,lout):
+    dId = "1c232c57-7f59-407c-ae16-08bafaabc1d6"
+    data_Dialog = {        
+        'id' : dId ,
+        'mode' :"-",
+        'inputs' : ent,
+        'outputs': [{
+            'output' :sai,
+            'actions' :"script:" + lin,
+            'emotions' :"",
+            'parameters' :[]
+        }],
+        'requires':[],
+        'concepts':[{
+            'name' :"context:script:" + str(lin)
+        }],
+        'entities' :[{
+            'name' :"context:script:" + str(lin)
+        }]
+    }
 
 def procScript(data,elos,nomeScripts):
     nome = data['key']
@@ -100,6 +118,7 @@ def procDialogo(data,elos):
             linkOut.append(o)
 
     jsonDialogo(entrada,saida,linkIn,linkOut)
+
 def inicia(json):
 
     #Cria duas listas, uma contendos os links e a outra contendo os dados
