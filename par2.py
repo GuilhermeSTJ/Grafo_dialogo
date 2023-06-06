@@ -45,10 +45,10 @@ def jsonScript(nome,cont):
         "name":nome,
         "content":''.join(cont)
     }
-    with open("C:/Users/Teo/Downloads/Script/"+ nome + '.json', 'w', encoding='utf-8') as f:
+    with open("/home/teo/download/robo/Script/"+ nome + '.json', 'w', encoding='utf-8') as f:
         json.dump( data_Script, f, ensure_ascii=False, indent=4)
 
-def jsonDialogo():
+def jsonDialogo(ent,sai,lin,lout):
     nome = ''
 
 def procScript(data,elos,nomeScripts):
@@ -99,7 +99,13 @@ def procDialogo(data,elos):
         if(o['from'] == data['key']):
             linkOut.append(o)
 
+    for e in entrada:
+        e.replace(';','')
+        print(e)
+
+    
     jsonDialogo(entrada,saida,linkIn,linkOut)
+
 def inicia(json):
 
     #Cria duas listas, uma contendos os links e a outra contendo os dados
