@@ -32,11 +32,10 @@ Exemplo:
 
 voice: Olá #{nome}, eu sou Robios!;
 
-listen;
+listen:;
 
 ## Funcionamento do nó de Diálogo
 Basta adicionar os textos em relação a inputs do lado esquerdo e outputs do direito.
 Atualmente o parser entende somente uma entrada de output e action.
 
 ;            -> Passa para ou o próximo "input"
-OBS: ; 
