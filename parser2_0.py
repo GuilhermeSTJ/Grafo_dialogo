@@ -10,13 +10,6 @@ nome_scripts= []
 #Salva os dados referentes a links
 linkos = [""]
 
-nome = "script03"
-conteudo = "speak@Teste02@true@true\nwait@1000\nvoice@command@trigger_asr"
-
-entrada = '{"input":"Entrada um"},{"input":"Entrada dois"},{"input":"Entrada três"}'
-saida2 = '{"output":"Resposta um","actions":"","emotions":"","parameters":[]},{"output":"Resposta 02","actions":"script:Script1","emotions":"","parameters":[]},{"output":"Resposta 03","actions":"script:Script2","emotions":"","parameters":[]}'
-context = '{"name":"no.answer"},{"name":"context:script:Script2"},{"name":"context:script:Script1"}'
-
 def trataScript(tudo,linkos):
     conteudo = []
     nome = tudo['key']
